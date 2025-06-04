@@ -229,17 +229,40 @@ li {
     const menu = document.createElement('div');
     menu.className = 'menu';
 
-    // Edit button
-    const editBtn = document.createElement('button');
-    editBtn.textContent = 'Edit';
-    menu.appendChild(editBtn);
+// Create 3-dot menu button
+const menuBtn = document.createElement('button');
+menuBtn.textContent = '⋮';
+menuBtn.style.marginLeft = 'auto';
 
-    // Delete button
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = 'Delete';
-    menu.appendChild(deleteBtn);
+// Create dropdown menu
+const menu = document.createElement('div');
+menu.className = 'dropdown-menu';
 
-    li.appendChild(menu);
+const editBtn = document.createElement('button');
+editBtn.textContent = 'Edit';
+// ...your edit logic here
+
+const deleteBtn = document.createElement('button');
+deleteBtn.textContent = 'Delete';
+// ...your delete logic here
+
+menu.appendChild(editBtn);
+menu.appendChild(deleteBtn);
+
+// Toggle dropdown
+menuBtn.onclick = (e) => {
+  e.stopPropagation();
+  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+};
+
+// Close menu when clicking outside
+document.addEventListener('click', () => {
+  menu.style.display = 'none';
+});
+
+li.appendChild(menuBtn);
+li.appendChild(menu);
+
 
     // Toggle menu visibility
     menuBtn.onclick = (e) => {
