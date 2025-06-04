@@ -13,73 +13,62 @@
 
   <style>
     /* 3-dot button styling */
-.menu-btn {
-  background: transparent;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  margin-left: auto;
-  position: relative;
-}
-
-/* Menu container */
-.menu {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 100%;
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 0.3rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  z-index: 10;
-  min-width: 100px;
-}
-
-/* Show menu when active */
-.menu.active {
-  display: block;
-}
-
-/* Menu items */
-.menu button {
-  width: 100%;
-  background: none;
-  border: none;
-  padding: 0.5rem 1rem;
-  text-align: left;
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: #0f172a;
-}
-
-.menu button:hover {
-  background-color: #10b981;
-  color: white;
-}
-
-/* Inline editing input */
-.edit-input {
-  flex-grow: 1;
-  padding: 0.2rem 0.4rem;
-  font-size: 1rem;
-  margin-right: 0.5rem;
-}
-li {
-  position: relative;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 30px; /* Adjust as needed */
-  right: 0;
-  display: none;
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  z-index: 100;
-}
-
+    .menu-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      margin-left: auto;
+      position: relative;
+    }
+    /* Menu container */
+    .menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 0.3rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 10;
+      min-width: 100px;
+    }
+    /* Show menu when active */
+    .menu.active {
+      display: block;
+    }
+    /* Menu items */
+    .menu button {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 0.5rem 1rem;
+      text-align: left;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: #0f172a;
+    }
+    .menu button:hover {
+      background-color: #10b981;
+      color: white;
+    }
+    /* Inline editing input */
+    .edit-input {
+      flex-grow: 1;
+      padding: 0.2rem 0.4rem;
+      font-size: 1rem;
+      margin-right: 0.5rem;
+    }
+    li {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    input[type="checkbox"] {
+      margin-right: 0.5rem;
+    }
     body {
       font-family: sans-serif;
       background: #f8fafc;
@@ -100,28 +89,19 @@ li {
       margin-bottom: 1rem;
     }
     #progress-bar {
-  background: #10b981;
-  height: 100%;
-  width: 0%;
-  transition: width 0.3s;
-  color: white;
-  font-weight: bold;
-  text-align: center;
-  line-height: 20px; /* vertically center text since height is 20px */
-  user-select: none;
-}
-
+      background: #10b981;
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      line-height: 20px;
+      user-select: none;
+    }
     ul {
       list-style: none;
       padding: 0;
-    }
-    li {
-      display: flex;
-      align-items: center;
-      margin-bottom: 0.5rem;
-    }
-    input[type="checkbox"] {
-      margin-right: 0.5rem;
     }
     #new-task {
       width: 100%;
@@ -156,14 +136,14 @@ li {
 
   <!-- Firebase config & app logic -->
   <script>
-    // Firebase config — make sure storageBucket is correct (ends with appspot.com)
+    // Firebase config — check storageBucket value!
     const firebaseConfig = {
-       apiKey: "AIzaSyB_2emUM0gMqkLaZrvdmeyV7zRvwRjYTC8",
-  authDomain: "zero-to-hero-ae0b8.firebaseapp.com",
-  projectId: "zero-to-hero-ae0b8",
-  storageBucket: "zero-to-hero-ae0b8.firebasestorage.app",
-  messagingSenderId: "858502999236",
-  appId: "1:858502999236:web:85d774dd58b905e677ed91",
+      apiKey: "AIzaSyB_2emUM0gMqkLaZrvdmeyV7zRvwRjYTC8",
+      authDomain: "zero-to-hero-ae0b8.firebaseapp.com",
+      projectId: "zero-to-hero-ae0b8",
+      storageBucket: "zero-to-hero-ae0b8.firebasestorage.app",
+      messagingSenderId: "858502999236",
+      appId: "1:858502999236:web:85d774dd58b905e677ed91",
     };
 
     // Initialize Firebase
@@ -179,139 +159,141 @@ li {
         console.error("Error saving tasks:", e);
       }
     }
-async function addTask() {
-  const input = document.getElementById('new-task');
-  const text = input.value.trim();
-  if (text) {
-    tasks.push({ text, done: false });
-    await saveTasks();
-    await renderTasks();
-    input.value = '';
-  }
-}
 
-   async function renderTasks() {
-  try {
-    const doc = await db.collection("tasks").doc("defaultList").get();
-    if (doc.exists) {
-      tasks = doc.data().tasks || [];
-    } else {
-      tasks = [];
+    async function addTask() {
+      const input = document.getElementById('new-task');
+      const text = input.value.trim();
+      if (text) {
+        tasks.push({ text, done: false });
+        await saveTasks();
+        await renderTasks();
+        input.value = '';
+      }
     }
-  } catch (e) {
-    console.error("Error loading tasks:", e);
-    tasks = [];
-  }
 
-  const list = document.getElementById('task-list');
-  list.innerHTML = '';
-
-  tasks.forEach((task, i) => {
-    const li = document.createElement('li');
-    li.style.display = 'flex';
-    li.style.alignItems = 'center';
-
-    // Checkbox
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.checked = task.done;
-    checkbox.onchange = async () => {
-      tasks[i].done = checkbox.checked;
-      await saveTasks();
-      renderTasks();
-    };
-    li.appendChild(checkbox);
-
-    // Task text container
-    const textSpan = document.createElement('span');
-    textSpan.textContent = task.text;
-    textSpan.style.flexGrow = '1';
-    textSpan.style.marginLeft = '0.5rem';
-    li.appendChild(textSpan);
-
-    // Menu button (3 dots)
-    const menuBtn = document.createElement('button');
-    menuBtn.className = 'menu-btn';
-    menuBtn.textContent = '⋮';
-    li.appendChild(menuBtn);
-
- // Menu container
-let menu = document.createElement('div');
-menu.className = 'menu';
-
-// Create Edit and Delete buttons
-const editBtn = document.createElement('button');
-editBtn.textContent = 'Edit';
-
-const deleteBtn = document.createElement('button');
-deleteBtn.textContent = 'Delete';
-
-// Add buttons to the menu
-menu.appendChild(editBtn);
-menu.appendChild(deleteBtn);
-li.appendChild(menu);
-
-// Toggle menu visibility
-menuBtn.onclick = (e) => {
-  e.stopPropagation();
-  document.querySelectorAll('.menu.active').forEach(m => {
-    if (m !== menu) m.classList.remove('active');
-  });
-  menu.classList.toggle('active');
-};
-
-// Close menu if click outside
-document.addEventListener('click', () => {
-  menu.classList.remove('active');
-});
-
-// Delete functionality
-deleteBtn.onclick = async (e) => {
-  e.stopPropagation();
-  tasks.splice(i, 1);
-  await saveTasks();
-  renderTasks();
-};
-
-// Edit functionality
-editBtn.onclick = (e) => {
-  e.stopPropagation();
-  menu.classList.remove('active');
-
-  // Replace textSpan with input box
-  
-  input.onkeydown = (event) => {
-    if (event.key === 'Enter') input.blur();
-    if (event.key === 'Escape') renderTasks();
-  };
-};
-
-
-     
-      input.onkeydown = (event) => {
-        if (event.key === 'Enter') {
-          input.blur();
+    async function renderTasks() {
+      try {
+        const doc = await db.collection("tasks").doc("defaultList").get();
+        if (doc.exists) {
+          tasks = doc.data().tasks || [];
+        } else {
+          tasks = [];
         }
-        if (event.key === 'Escape') {
+      } catch (e) {
+        console.error("Error loading tasks:", e);
+        tasks = [];
+      }
+
+      const list = document.getElementById('task-list');
+      list.innerHTML = '';
+
+      tasks.forEach((task, i) => {
+        const li = document.createElement('li');
+
+        // Checkbox
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = task.done;
+        checkbox.onchange = async () => {
+          tasks[i].done = checkbox.checked;
+          await saveTasks();
           renderTasks();
-        }
-      };
-    });
+        };
+        li.appendChild(checkbox);
 
-    list.appendChild(li);
-  };
+        // Task text container
+        const textSpan = document.createElement('span');
+        textSpan.textContent = task.text;
+        textSpan.style.flexGrow = '1';
+        textSpan.style.marginLeft = '0.5rem';
+        li.appendChild(textSpan);
 
-  updateProgress();
+        // Menu button (3 dots)
+        const menuBtn = document.createElement('button');
+        menuBtn.className = 'menu-btn';
+        menuBtn.textContent = '⋮';
+        li.appendChild(menuBtn);
 
- function updateProgress() {
-  const total = tasks.length;
-  const completed = tasks.filter(t => t.done).length;
-  const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
-  const progressBar = document.getElementById('progress-bar');
-  progressBar.style.width = percent + '%';
-  progressBar.textContent = percent + '%';
-}
+        // Menu container
+        const menu = document.createElement('div');
+        menu.className = 'menu';
 
+        // Create Edit and Delete buttons
+        const editBtn = document.createElement('button');
+        editBtn.textContent = 'Edit';
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+
+        // Add buttons to the menu
+        menu.appendChild(editBtn);
+        menu.appendChild(deleteBtn);
+        li.appendChild(menu);
+
+        // Toggle menu visibility
+        menuBtn.onclick = (e) => {
+          e.stopPropagation();
+          document.querySelectorAll('.menu.active').forEach(m => {
+            if (m !== menu) m.classList.remove('active');
+          });
+          menu.classList.toggle('active');
+        };
+
+        // Close menu if click outside
+        document.addEventListener('click', () => {
+          menu.classList.remove('active');
+        });
+
+        // Delete functionality
+        deleteBtn.onclick = async (e) => {
+          e.stopPropagation();
+          tasks.splice(i, 1);
+          await saveTasks();
+          renderTasks();
+        };
+
+        // Edit functionality
+        editBtn.onclick = (e) => {
+          e.stopPropagation();
+          menu.classList.remove('active');
+
+          // Replace textSpan with input box
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.className = 'edit-input';
+          input.value = tasks[i].text;
+          li.replaceChild(input, textSpan);
+          input.focus();
+
+          input.onblur = async () => {
+            if (input.value.trim()) {
+              tasks[i].text = input.value.trim();
+              await saveTasks();
+              renderTasks();
+            } else {
+              renderTasks();
+            }
+          };
+          input.onkeydown = (event) => {
+            if (event.key === 'Enter') input.blur();
+            if (event.key === 'Escape') renderTasks();
+          };
+        };
+
+        list.appendChild(li);
+      });
+
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const total = tasks.length;
+      const completed = tasks.filter(t => t.done).length;
+      const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+      const progressBar = document.getElementById('progress-bar');
+      progressBar.style.width = percent + '%';
+      progressBar.textContent = percent + '%';
+    }
 
     // Load tasks on page load
     renderTasks();
@@ -327,5 +309,6 @@ editBtn.onclick = (e) => {
   </script>
 </body>
 </html>
+
 
 
