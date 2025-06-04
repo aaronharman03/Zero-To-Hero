@@ -12,6 +12,60 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <style>
+    /* 3-dot button styling */
+.menu-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: auto;
+  position: relative;
+}
+
+/* Menu container */
+.menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 0.3rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 10;
+  min-width: 100px;
+}
+
+/* Show menu when active */
+.menu.active {
+  display: block;
+}
+
+/* Menu items */
+.menu button {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #0f172a;
+}
+
+.menu button:hover {
+  background-color: #10b981;
+  color: white;
+}
+
+/* Inline editing input */
+.edit-input {
+  flex-grow: 1;
+  padding: 0.2rem 0.4rem;
+  font-size: 1rem;
+  margin-right: 0.5rem;
+}
+
     body {
       font-family: sans-serif;
       background: #f8fafc;
