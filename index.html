@@ -279,22 +279,7 @@ editBtn.onclick = (e) => {
   menu.classList.remove('active');
 
   // Replace textSpan with input box
-  const input = document.createElement('input');
-  input.type = 'text';
-  input.className = 'edit-input';
-  input.value = tasks[i].text;
-  li.replaceChild(input, textSpan);
-  input.focus();
-
-  input.onblur = async () => {
-    if (input.value.trim()) {
-      tasks[i].text = input.value.trim();
-      await saveTasks();
-      renderTasks();
-    } else {
-      renderTasks();
-    }
-  };
+  
   input.onkeydown = (event) => {
     if (event.key === 'Enter') input.blur();
     if (event.key === 'Escape') renderTasks();
@@ -302,25 +287,7 @@ editBtn.onclick = (e) => {
 };
 
 
-      // Replace textSpan with input box
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.className = 'edit-input';
-      input.value = tasks[i].text;
-      li.replaceChild(input, textSpan);
-      input.focus();
-
-      // Save on Enter or blur
-      input.onblur = async () => {
-        if (input.value.trim()) {
-          tasks[i].text = input.value.trim();
-          await saveTasks();
-          renderTasks();
-        } else {
-          // If empty, revert
-          renderTasks();
-        }
-      };
+     
       input.onkeydown = (event) => {
         if (event.key === 'Enter') {
           input.blur();
