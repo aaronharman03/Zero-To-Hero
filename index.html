@@ -7,9 +7,9 @@
   <meta name="theme-color" content="#0f172a"/>
   <link rel="manifest" href="manifest.json" />
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+  <!-- Firebase SDKs v8 for global 'firebase' -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <style>
     body {
@@ -82,40 +82,53 @@
 
   <!-- Firebase config & app logic -->
   <script>
-    // ✅ Firebase config (replace with your real config)
+    // Firebase config — make sure storageBucket is correct (ends with appspot.com)
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
+       apiKey: "AIzaSyB_2emUM0gMqkLaZrvdmeyV7zRvwRjYTC8",
+  authDomain: "zero-to-hero-ae0b8.firebaseapp.com",
+  projectId: "zero-to-hero-ae0b8",
+  storageBucket: "zero-to-hero-ae0b8.firebasestorage.app",
+  messagingSenderId: "858502999236",
+  appId: "1:858502999236:web:85d774dd58b905e677ed91",
     };
 
+    // Initialize Firebase
     const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
     let tasks = [];
 
     async function saveTasks() {
-      await db.collection("tasks").doc("defaultList").set({ tasks });
+      try {
+        await db.collection("tasks").doc("defaultList").set({ tasks });
+      } catch (e) {
+        console.error("Error saving tasks:", e);
+      }
     }
 
     async function renderTasks() {
-      const doc = await db.collection("tasks").doc("defaultList").get();
-      if (doc.exists) {
-        tasks = doc.data().tasks || [];
+      try {
+        const doc = await db.collection("tasks").doc("defaultList").get();
+        if (doc.exists) {
+          tasks = doc.data().tasks || [];
+        } else {
+          tasks = [];
+        }
+      } catch(e) {
+        console.error("Error loading tasks:", e);
+        tasks = [];
       }
 
       const list = document.getElementById('task-list');
       list.innerHTML = '';
+
       tasks.forEach((task, i) => {
         const li = document.createElement('li');
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.checked = task.done;
         checkbox.onchange = async () => {
-          tasks[i].done = !tasks[i].done;
+          tasks[i].done = checkbox.checked;
           await saveTasks();
           renderTasks();
         };
@@ -127,13 +140,13 @@
       updateProgress();
     }
 
-    function addTask() {
+    async function addTask() {
       const input = document.getElementById('new-task');
       const text = input.value.trim();
       if (text) {
         tasks.push({ text, done: false });
-        saveTasks();
-        renderTasks();
+        await saveTasks();
+        await renderTasks();
         input.value = '';
       }
     }
@@ -145,14 +158,18 @@
       document.getElementById('progress-bar').style.width = percent + '%';
     }
 
+    // Load tasks on page load
     renderTasks();
 
-    // ✅ Register service worker
+    // Register service worker for PWA offline support
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js');
+        navigator.serviceWorker.register('sw.js').catch(e => {
+          console.error('Service Worker registration failed:', e);
+        });
       });
     }
   </script>
 </body>
 </html>
+
