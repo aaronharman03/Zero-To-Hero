@@ -337,17 +337,6 @@ li.appendChild(menu);
   updateProgress();
 }
 
-    async function addTask() {
-      const input = document.getElementById('new-task');
-      const text = input.value.trim();
-      if (text) {
-        tasks.push({ text, done: false });
-        await saveTasks();
-        await renderTasks();
-        input.value = '';
-      }
-    }
-
  function updateProgress() {
   const total = tasks.length;
   const completed = tasks.filter(t => t.done).length;
