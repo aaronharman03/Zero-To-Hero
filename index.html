@@ -179,6 +179,16 @@ li {
         console.error("Error saving tasks:", e);
       }
     }
+async function addTask() {
+  const input = document.getElementById('new-task');
+  const text = input.value.trim();
+  if (text) {
+    tasks.push({ text, done: false });
+    await saveTasks();
+    await renderTasks();
+    input.value = '';
+  }
+}
 
    async function renderTasks() {
   try {
