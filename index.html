@@ -32,11 +32,17 @@
       margin-bottom: 1rem;
     }
     #progress-bar {
-      background: #10b981;
-      height: 100%;
-      width: 0%;
-      transition: width 0.3s;
-    }
+  background: #10b981;
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  line-height: 20px; /* vertically center text since height is 20px */
+  user-select: none;
+}
+
     ul {
       list-style: none;
       padding: 0;
@@ -151,12 +157,15 @@
       }
     }
 
-    function updateProgress() {
-      const total = tasks.length;
-      const completed = tasks.filter(t => t.done).length;
-      const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
-      document.getElementById('progress-bar').style.width = percent + '%';
-    }
+ function updateProgress() {
+  const total = tasks.length;
+  const completed = tasks.filter(t => t.done).length;
+  const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+  const progressBar = document.getElementById('progress-bar');
+  progressBar.style.width = percent + '%';
+  progressBar.textContent = percent + '%';
+}
+
 
     // Load tasks on page load
     renderTasks();
