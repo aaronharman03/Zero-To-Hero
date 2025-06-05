@@ -286,14 +286,15 @@
       updateProgress();
     }
 
-    function updateProgress() {
-      const total = tasks.length;
-      const completed = tasks.filter(t => t.done).length;
-      const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
-      const progressBar = document.getElementById('progress-bar');
-      progressBar.style.width = percent + '%';
-      progressBar.textContent = percent + '%';
-    }
+  function updateProgress() {
+  const totalWeight = tasks.reduce((sum, t) => sum + (t.weight || 1), 0);
+  const completedWeight = tasks.reduce((sum, t) => sum + ((t.done ? (t.weight || 1) : 0)), 0);
+  const percent = totalWeight > 0 ? ((completedWeight / totalWeight) * 100).toFixed(2) : '0.00';
+  const progressBar = document.getElementById('progress-bar');
+  progressBar.style.width = percent + '%';
+  progressBar.textContent = percent + '%';
+}
+
 
     // Load tasks on page load
     renderTasks();
