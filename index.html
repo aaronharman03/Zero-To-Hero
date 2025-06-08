@@ -284,6 +284,17 @@
 
         list.appendChild(li);
       });
+      Sortable.create(document.getElementById('task-list'), {
+  animation: 150,
+  onEnd: async function (evt) {
+    // Reorder the tasks array
+    const movedItem = tasks.splice(evt.oldIndex, 1)[0];
+    tasks.splice(evt.newIndex, 0, movedItem);
+    await saveTasks();
+    renderTasks(); // re-render to update UI and progress
+  }
+});
+
 
       updateProgress();
     }
