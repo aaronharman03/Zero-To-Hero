@@ -284,20 +284,23 @@
 
         list.appendChild(li);
       });
-      Sortable.create(document.getElementById('task-list'), {
+     // Store the sortable instance globally so we can destroy it when re-rendering
+if (window.sortableInstance) {
+  window.sortableInstance.destroy();
+}
+
+window.sortableInstance = Sortable.create(document.getElementById('task-list'), {
   animation: 150,
   onEnd: async function (evt) {
-    // Reorder the tasks array
+    // Rearrange task order in the array
     const movedItem = tasks.splice(evt.oldIndex, 1)[0];
     tasks.splice(evt.newIndex, 0, movedItem);
     await saveTasks();
-    renderTasks(); // re-render to update UI and progress
+    // ❌ Don't re-render here or it'll snap back
+    // ✅ Just update progress bar instead
+    updateProgress();
   }
 });
-
-
-      updateProgress();
-    }
 
   function updateProgress() {
   const totalWeight = tasks.reduce((sum, t) => sum + (t.weight || 1), 0);
