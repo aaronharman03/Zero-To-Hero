@@ -211,12 +211,40 @@ li span {
         };
         li.appendChild(checkbox);
 
-        // Task text container
-        const textSpan = document.createElement('span');
-        textSpan.textContent = task.text;
+                const textSpan = document.createElement('span');
+        textSpan.textContent = `${task.text}: ${task.count}/${task.target} (XP: ${task.xpPer})`;
         textSpan.style.flexGrow = '1';
         textSpan.style.marginLeft = '0.5rem';
         li.appendChild(textSpan);
+
+        // Minus button
+        const minusBtn = document.createElement('button');
+        minusBtn.textContent = '−';
+        minusBtn.onclick = async () => {
+          if (task.count > 0) {
+            task.count--;
+            task.done = task.count >= task.target;
+            await saveTasks();
+            updateProgress();
+            renderTasks();
+          }
+        };
+        li.appendChild(minusBtn);
+
+        // Plus button
+        const plusBtn = document.createElement('button');
+        plusBtn.textContent = '+';
+        plusBtn.onclick = async () => {
+          if (task.count < task.target) {
+            task.count++;
+            task.done = task.count >= task.target;
+            await saveTasks();
+            updateProgress();
+            renderTasks();
+          }
+        };
+        li.appendChild(plusBtn);
+
 
         // Menu button (3 dots)
         const menuBtn = document.createElement('button');
