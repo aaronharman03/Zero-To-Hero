@@ -173,7 +173,14 @@ li span {
       const input = document.getElementById('new-task');
       const text = input.value.trim();
       if (text) {
-        tasks.push({ text, done: false });
+        tasks.push({
+  text,
+  count: 0,
+  target: 1,
+  xpPer: 10,
+  done: false
+});
+
         await saveTasks();
         await renderTasks();
         input.value = '';
