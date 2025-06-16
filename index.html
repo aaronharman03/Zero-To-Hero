@@ -169,30 +169,16 @@ li span {
       }
     }
 
-   async function addTask() {
-  const text = prompt("Task name?");
-  if (!text) return;
-
-  const targetStr = prompt("How many steps to complete it?");
-  const target = parseInt(targetStr);
-  if (isNaN(target) || target < 1) return;
-
-  const xpStr = prompt("How much XP per step?");
-  const xpPer = parseInt(xpStr);
-  if (isNaN(xpPer) || xpPer < 1) return;
-
-  tasks.push({
-    text: text.trim(),
-    count: 0,
-    target,
-    xpPer,
-    done: false
-  });
-
-  await saveTasks();
-  renderTasks();
-}
-
+    async function addTask() {
+      const input = document.getElementById('new-task');
+      const text = input.value.trim();
+      if (text) {
+        tasks.push({ text, done: false });
+        await saveTasks();
+        await renderTasks();
+        input.value = '';
+      }
+    }
 
     async function renderTasks() {
       try {
@@ -325,15 +311,14 @@ window.sortableInstance = Sortable.create(document.getElementById('task-list'), 
   }
 });
 
- function updateProgress() {
-  const totalXP = tasks.reduce((sum, t) => sum + (t.xpPer * t.target), 0);
-  const earnedXP = tasks.reduce((sum, t) => sum + (t.count * t.xpPer), 0);
-  const percent = totalXP > 0 ? ((earnedXP / totalXP) * 100).toFixed(2) : '0.00';
+  function updateProgress() {
+  const totalWeight = tasks.reduce((sum, t) => sum + (t.weight || 1), 0);
+  const completedWeight = tasks.reduce((sum, t) => sum + ((t.done ? (t.weight || 1) : 0)), 0);
+  const percent = totalWeight > 0 ? ((completedWeight / totalWeight) * 100).toFixed(2) : '0.00';
   const progressBar = document.getElementById('progress-bar');
   progressBar.style.width = percent + '%';
-  progressBar.textContent = `${earnedXP} XP (${percent}%)`;
+  progressBar.textContent = percent + '%';
 }
-
 
 
     // Load tasks on page load
@@ -350,6 +335,8 @@ window.sortableInstance = Sortable.create(document.getElementById('task-list'), 
   </script>
 </body>
 </html>
+
+
 
 
 
