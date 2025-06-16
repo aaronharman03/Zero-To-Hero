@@ -164,7 +164,7 @@
 
     async function addTask() {
       const input = document.getElementById('new-task');
-      const text = input.value.replace(/\s+/g, ' ').trim();
+      const text = input.value.replace(/[\r\n]+/g, ' ').replace(/\s+/g, ' ').trim();
       if (text) {
         tasks.push({ text, done: false });
         await saveTasks();
