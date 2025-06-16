@@ -172,147 +172,199 @@ li span {
       }
     }
 
-    async function addTask() {
-      const input = document.getElementById('new-task');
-      const text = input.value.trim();
-      if (text) {
-        tasks.push({ text, done: false });
-        await saveTasks();
-        await renderTasks();
-        input.value = '';
-      }
-    }
+   async function addTask() {
+  const nameInput = document.getElementById('task-name');
+  const targetInput = document.getElementById('task-target');
+  const xpInput = document.getElementById('task-xp');
 
-    async function renderTasks() {
-      try {
-        const doc = await db.collection("tasks").doc("defaultList").get();
-        if (doc.exists) {
-          tasks = doc.data().tasks || [];
-        } else {
-          tasks = [];
-        }
-      } catch (e) {
-        console.error("Error loading tasks:", e);
-        tasks = [];
-      }
+  const name = nameInput.value.trim();
+  const target = parseInt(targetInput.value);
+  const xpPer = parseInt(xpInput.value);
 
-      const list = document.getElementById('task-list');
-      list.innerHTML = '';
+  if (!name || !target || !xpPer || target <= 0 || xpPer <= 0) {
+    alert("Please enter valid task name, target amount, and XP per log.");
+    return;
+  }
 
-      tasks.forEach((task, i) => {
-        const li = document.createElement('li');
+  tasks.push({
+    text: name,
+    count: 0,
+    target: target,
+    xpPer: xpPer,
+    done: false
+  });
 
-        // Checkbox
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.checked = task.done;
-        checkbox.onchange = async () => {
-          tasks[i].done = checkbox.checked;
-          await saveTasks();
-          updateProgress();
-          renderTasks();
-        };
-        li.appendChild(checkbox);
+  await saveTasks();
+  await renderTasks();
 
-        // Task text container
-        const textSpan = document.createElement('span');
-        textSpan.textContent = task.text;
-        textSpan.style.flexGrow = '1';
-        textSpan.style.marginLeft = '0.5rem';
-        li.appendChild(textSpan);
-
-        // Menu button (3 dots)
-        const menuBtn = document.createElement('button');
-        menuBtn.className = 'menu-btn';
-        menuBtn.textContent = '⋮';
-        li.appendChild(menuBtn);
-
-        // Menu container
-        const menu = document.createElement('div');
-        menu.className = 'menu';
-
-        // Create Edit and Delete buttons
-        const editBtn = document.createElement('button');
-        editBtn.textContent = 'Edit';
-
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Delete';
-
-        // Add buttons to the menu
-        menu.appendChild(editBtn);
-        menu.appendChild(deleteBtn);
-        li.appendChild(menu);
-
-        // Toggle menu visibility
-        menuBtn.onclick = (e) => {
-          e.stopPropagation();
-          document.querySelectorAll('.menu.active').forEach(m => {
-            if (m !== menu) m.classList.remove('active');
-          });
-          menu.classList.toggle('active');
-        };
-
-        // Close menu if click outside
-        document.addEventListener('click', () => {
-          menu.classList.remove('active');
-        });
-
-        // Delete functionality
-        deleteBtn.onclick = async (e) => {
-          e.stopPropagation();
-          tasks.splice(i, 1);
-          await saveTasks();
-          renderTasks();
-        };
-
-        // Edit functionality
-        editBtn.onclick = (e) => {
-          e.stopPropagation();
-          menu.classList.remove('active');
-
-          // Replace textSpan with input box
-          const input = document.createElement('input');
-          input.type = 'text';
-          input.className = 'edit-input';
-          input.value = tasks[i].text;
-          li.replaceChild(input, textSpan);
-          input.focus();
-
-          input.onblur = async () => {
-            if (input.value.trim()) {
-              tasks[i].text = input.value.trim();
-              await saveTasks();
-              renderTasks();
-            } else {
-              renderTasks();
-            }
-          };
-          input.onkeydown = (event) => {
-            if (event.key === 'Enter') input.blur();
-            if (event.key === 'Escape') renderTasks();
-          };
-        };
-
-        list.appendChild(li);
-      });
-    }
-     // Store the sortable instance globally so we can destroy it when re-rendering
-if (window.sortableInstance) {
-  window.sortableInstance.destroy();
+  nameInput.value = '';
+  targetInput.value = '';
+  xpInput.value = '';
 }
 
-window.sortableInstance = Sortable.create(document.getElementById('task-list'), {
-  animation: 150,
-  onEnd: async function (evt) {
-    // Rearrange task order in the array
-    const movedItem = tasks.splice(evt.oldIndex, 1)[0];
-    tasks.splice(evt.newIndex, 0, movedItem);
-    await saveTasks();
-    // ❌ Don't re-render here or it'll snap back
-    // ✅ Just update progress bar instead
-    updateProgress();
+async function renderTasks() {
+  try {
+    const doc = await db.collection("tasks").doc("defaultList").get();
+    if (doc.exists) {
+      tasks = doc.data().tasks || [];
+    } else {
+      tasks = [];
+    }
+  } catch (e) {
+    console.error("Error loading tasks:", e);
+    tasks = [];
   }
-});
+
+  const list = document.getElementById('task-list');
+  list.innerHTML = '';
+
+  tasks.forEach((task, i) => {
+    task.done = task.count >= task.target;
+
+    const li = document.createElement('li');
+
+    // Checkbox
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = task.done;
+    checkbox.onchange = async () => {
+      tasks[i].done = checkbox.checked;
+      await saveTasks();
+      updateProgress();
+      renderTasks();
+    };
+    li.appendChild(checkbox);
+
+    // Task info text
+    const textSpan = document.createElement('span');
+    textSpan.textContent = `${task.text}: ${task.count}/${task.target} (XP per log: ${task.xpPer})`;
+    textSpan.style.flexGrow = '1';
+    textSpan.style.marginLeft = '0.5rem';
+    li.appendChild(textSpan);
+
+    // Minus button
+    const minusBtn = document.createElement('button');
+    minusBtn.textContent = '−';
+    minusBtn.onclick = async () => {
+      if (task.count > 0) {
+        task.count--;
+        task.done = task.count >= task.target;
+        await saveTasks();
+        updateProgress();
+        renderTasks();
+      }
+    };
+    li.appendChild(minusBtn);
+
+    // Plus button
+    const plusBtn = document.createElement('button');
+    plusBtn.textContent = '+';
+    plusBtn.onclick = async () => {
+      if (task.count < task.target) {
+        task.count++;
+        task.done = task.count >= task.target;
+        await saveTasks();
+        updateProgress();
+        renderTasks();
+      }
+    };
+    li.appendChild(plusBtn);
+
+    // Menu button (3 dots)
+    const menuBtn = document.createElement('button');
+    menuBtn.className = 'menu-btn';
+    menuBtn.textContent = '⋮';
+    li.appendChild(menuBtn);
+
+    // Menu container
+    const menu = document.createElement('div');
+    menu.className = 'menu';
+
+    const editBtn = document.createElement('button');
+    editBtn.textContent = 'Edit';
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+
+    menu.appendChild(editBtn);
+    menu.appendChild(deleteBtn);
+    li.appendChild(menu);
+
+    menuBtn.onclick = (e) => {
+      e.stopPropagation();
+      document.querySelectorAll('.menu.active').forEach(m => {
+        if (m !== menu) m.classList.remove('active');
+      });
+      menu.classList.toggle('active');
+    };
+
+    document.addEventListener('click', () => {
+      menu.classList.remove('active');
+    });
+
+    deleteBtn.onclick = async (e) => {
+      e.stopPropagation();
+      tasks.splice(i, 1);
+      await saveTasks();
+      renderTasks();
+    };
+
+    editBtn.onclick = (e) => {
+      e.stopPropagation();
+      menu.classList.remove('active');
+
+      // Replace textSpan with inputs for editing
+      const inputName = document.createElement('input');
+      inputName.type = 'text';
+      inputName.value = task.text;
+      inputName.className = 'edit-input';
+
+      const inputTarget = document.createElement('input');
+      inputTarget.type = 'number';
+      inputTarget.min = '1';
+      inputTarget.value = task.target;
+      inputTarget.className = 'edit-input';
+
+      const inputXp = document.createElement('input');
+      inputXp.type = 'number';
+      inputXp.min = '1';
+      inputXp.value = task.xpPer;
+      inputXp.className = 'edit-input';
+
+      li.replaceChild(inputName, textSpan);
+      li.insertBefore(inputTarget, minusBtn);
+      li.insertBefore(inputXp, minusBtn);
+
+      inputName.focus();
+
+      const saveEdit = async () => {
+        if (inputName.value.trim() && inputTarget.value > 0 && inputXp.value > 0) {
+          task.text = inputName.value.trim();
+          task.target = parseInt(inputTarget.value);
+          task.xpPer = parseInt(inputXp.value);
+          if (task.count > task.target) task.count = task.target;
+          await saveTasks();
+          renderTasks();
+        } else {
+          renderTasks();
+        }
+      };
+
+      inputName.onblur = saveEdit;
+      inputTarget.onblur = saveEdit;
+      inputXp.onblur = saveEdit;
+
+      inputName.onkeydown = (e) => { if (e.key === 'Enter') saveEdit(); };
+      inputTarget.onkeydown = (e) => { if (e.key === 'Enter') saveEdit(); };
+      inputXp.onkeydown = (e) => { if (e.key === 'Enter') saveEdit(); };
+    };
+
+    list.appendChild(li);
+  });
+
+  updateProgress();
+}
+
 
   function updateProgress() {
   const totalWeight = tasks.reduce((sum, t) => sum + (t.weight || 1), 0);
