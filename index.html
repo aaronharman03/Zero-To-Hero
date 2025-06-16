@@ -208,56 +208,7 @@ xpInput.value = '';
     const li = document.createElement('li');
 
     // --- ✅ CHECKBOX
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.checked = task.done;
-    checkbox.onchange = async () => {
-      tasks[i].done = checkbox.checked;
-      await saveTasks();
-      updateProgress();
-      renderTasks();
-    };
-    li.appendChild(checkbox);
-
-    // --- ✅ TEXT
-    const textSpan = document.createElement('span');
-    textSpan.textContent = `${task.text}: ${task.count}/${task.target || 1} (XP: ${task.xpPer || 1})`;
-    li.appendChild(textSpan);
-
-    // --- ✅ CONTROLS (+ / -)
-    const controls = document.createElement('div');
-    controls.style.display = 'flex';
-    controls.style.alignItems = 'center';
-    controls.style.gap = '0.5rem';
-
-    const minusBtn = document.createElement('button');
-    minusBtn.textContent = '−';
-    minusBtn.style.padding = '0.3rem 0.6rem';
-    minusBtn.onclick = async () => {
-      if (tasks[i].count > 0) {
-        tasks[i].count--;
-        await saveTasks();
-        updateProgress();
-        renderTasks();
-      }
-    };
-    controls.appendChild(minusBtn);
-
-    const plusBtn = document.createElement('button');
-    plusBtn.textContent = '+';
-    plusBtn.style.padding = '0.3rem 0.6rem';
-    plusBtn.onclick = async () => {
-      if (tasks[i].count < (tasks[i].target || 1)) {
-        tasks[i].count++;
-        await saveTasks();
-        updateProgress();
-        renderTasks();
-      }
-    };
-    controls.appendChild(plusBtn);
-
-    li.appendChild(controls);
-
+   
     // --- ✅ MENU (3 dots)
     const menuBtn = document.createElement('button');
     menuBtn.className = 'menu-btn';
