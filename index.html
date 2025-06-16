@@ -204,6 +204,7 @@ li span {
       list.innerHTML = '';
 
       tasks.forEach((task, i) => {
+        task.done = task.count >= task.target;
         const li = document.createElement('li');
 
         // Checkbox
