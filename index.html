@@ -317,14 +317,16 @@ window.sortableInstance = Sortable.create(document.getElementById('task-list'), 
   }
 });
 
-  function updateProgress() {
-  const totalWeight = tasks.reduce((sum, t) => sum + (t.weight || 1), 0);
-  const completedWeight = tasks.reduce((sum, t) => sum + ((t.done ? (t.weight || 1) : 0)), 0);
-  const percent = totalWeight > 0 ? ((completedWeight / totalWeight) * 100).toFixed(2) : '0.00';
+function updateProgress() {
+  const totalXP = tasks.reduce((sum, t) => sum + ((t.target || 1) * (t.xpPer || 1)), 0);
+  const completedXP = tasks.reduce((sum, t) => sum + ((t.count || 0) * (t.xpPer || 1)), 0);
+
+  const percent = totalXP > 0 ? ((completedXP / totalXP) * 100).toFixed(2) : '0.00';
   const progressBar = document.getElementById('progress-bar');
   progressBar.style.width = percent + '%';
   progressBar.textContent = percent + '%';
 }
+
 
 
     // Load tasks on page load
