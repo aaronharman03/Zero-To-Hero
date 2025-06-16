@@ -209,19 +209,66 @@ xpInput.value = '';
       const list = document.getElementById('task-list');
       list.innerHTML = '';
 
-      tasks.forEach((task, i) => {
-        const li = document.createElement('li');
+    tasks.forEach((task, i) => {
+  const li = document.createElement('li');
 
-        // Checkbox
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.checked = task.done;
-        checkbox.onchange = async () => {
-          tasks[i].done = checkbox.checked;
-          await saveTasks();
-          updateProgress();
-          renderTasks();
-        };
+  // Checkbox
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.checked = task.done;
+  checkbox.onchange = async () => {
+    tasks[i].done = checkbox.checked;
+    await saveTasks();
+    updateProgress();
+    renderTasks();
+  };
+  li.appendChild(checkbox);
+
+  // Controls container
+  const controls = document.createElement('div');
+  controls.style.display = 'flex';
+  controls.style.alignItems = 'center';
+  controls.style.gap = '0.5rem';
+
+  // Task text span
+  const textSpan = document.createElement('span');
+  textSpan.textContent = `${task.text}: ${task.count}/${task.target || 1} (XP: ${task.xpPer || 1})`;
+  textSpan.style.flexGrow = '1';
+  textSpan.style.marginLeft = '0.5rem';
+  controls.appendChild(textSpan);
+
+  // Minus button
+  const minusBtn = document.createElement('button');
+  minusBtn.textContent = '−';
+  minusBtn.style.padding = '0.3rem 0.6rem';
+  minusBtn.onclick = async () => {
+    if (tasks[i].count > 0) {
+      tasks[i].count--;
+      await saveTasks();
+      updateProgress();
+      renderTasks();
+    }
+  };
+  controls.appendChild(minusBtn);
+
+  // Plus button
+  const plusBtn = document.createElement('button');
+  plusBtn.textContent = '+';
+  plusBtn.style.padding = '0.3rem 0.6rem';
+  plusBtn.onclick = async () => {
+    if (tasks[i].count < (tasks[i].target || 1)) {
+      tasks[i].count++;
+      await saveTasks();
+      updateProgress();
+      renderTasks();
+    }
+  };
+  controls.appendChild(plusBtn);
+
+  li.appendChild(controls);
+
+  // ... rest of your menu button, edit, delete etc.
+
         li.appendChild(checkbox);
 
         // Task text container
