@@ -169,16 +169,30 @@ li span {
       }
     }
 
-    async function addTask() {
-      const input = document.getElementById('new-task');
-      const text = input.value.trim();
-      if (text) {
-        tasks.push({ text, done: false });
-        await saveTasks();
-        await renderTasks();
-        input.value = '';
-      }
-    }
+   async function addTask() {
+  const text = prompt("Task name?");
+  if (!text) return;
+
+  const targetStr = prompt("How many steps to complete it?");
+  const target = parseInt(targetStr);
+  if (isNaN(target) || target < 1) return;
+
+  const xpStr = prompt("How much XP per step?");
+  const xpPer = parseInt(xpStr);
+  if (isNaN(xpPer) || xpPer < 1) return;
+
+  tasks.push({
+    text: text.trim(),
+    count: 0,
+    target,
+    xpPer,
+    done: false
+  });
+
+  await saveTasks();
+  renderTasks();
+}
+
 
     async function renderTasks() {
       try {
