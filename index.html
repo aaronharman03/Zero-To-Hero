@@ -245,29 +245,29 @@ async function renderTasks() {
     // Minus button
     const minusBtn = document.createElement('button');
     minusBtn.textContent = '−';
-    minusBtn.onclick = async () => {
-      if (task.count > 0) {
-        task.count--;
-        task.done = task.count >= task.target;
-        await saveTasks();
-        updateProgress();
-        renderTasks();
-      }
-    };
+   minusBtn.onclick = async () => {
+  if (task.count > 0) {
+    task.count--;
+    task.done = task.count >= task.target;
+    await saveTasks();
+    renderTasks(); // this will call updateProgress inside
+  }
+};
+
     li.appendChild(minusBtn);
 
     // Plus button
     const plusBtn = document.createElement('button');
     plusBtn.textContent = '+';
-    plusBtn.onclick = async () => {
-      if (task.count < task.target) {
-        task.count++;
-        task.done = task.count >= task.target;
-        await saveTasks();
-        updateProgress();
-        renderTasks();
-      }
-    };
+plusBtn.onclick = async () => {
+  if (task.count < task.target) {
+    task.count++;
+    task.done = task.count >= task.target;
+    await saveTasks();
+    renderTasks(); // this will call updateProgress inside
+  }
+};
+
     li.appendChild(plusBtn);
 
     // Menu button (3 dots)
