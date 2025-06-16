@@ -60,12 +60,12 @@
       font-size: 1rem;
       margin-right: 0.5rem;
     }
-    li {
-      position: relative;
-      display: flex;
-      align-items: center;
-      margin-bottom: 0.5rem;
-    }
+   li {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  margin-right: 1rem; /* spacing between tasks */
+}
     input[type="checkbox"] {
       margin-right: 0.5rem;
     }
@@ -130,6 +130,12 @@
   text-overflow: ellipsis;  /* Show "..." if text too long */
   flex-grow: 1;
   margin-left: 0.5rem;
+}
+    #task-list {
+  display: flex;
+  overflow-x: auto;
+  padding: 0;
+  margin: 0;
 }
   </style>
 </head>
