@@ -219,7 +219,7 @@ if (text && target > 0) {
 
         // Task text container
         const textSpan = document.createElement('span');
-        textSpan.textContent = task.text;
+        textSpan.textContent = `${task.text}: ${task.count}/${task.target || 1} (XP: ${task.xpPer || 1})`;
         textSpan.style.flexGrow = '1';
         textSpan.style.marginLeft = '0.5rem';
         li.appendChild(textSpan);
