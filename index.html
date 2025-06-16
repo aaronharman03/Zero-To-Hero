@@ -173,14 +173,7 @@ li span {
       const input = document.getElementById('new-task');
       const text = input.value.trim();
       if (text) {
-        tasks.push({
-  text,
-  count: 0,
-  target: 1,
-  xpPer: 10,
-  done: false
-});
-
+        tasks.push({ text, done: false });
         await saveTasks();
         await renderTasks();
         input.value = '';
@@ -204,7 +197,6 @@ li span {
       list.innerHTML = '';
 
       tasks.forEach((task, i) => {
-        task.done = task.count >= task.target;
         const li = document.createElement('li');
 
         // Checkbox
@@ -219,40 +211,12 @@ li span {
         };
         li.appendChild(checkbox);
 
-                const textSpan = document.createElement('span');
-        textSpan.textContent = `${task.text}: ${task.count}/${task.target} (XP: ${task.xpPer})`;
+        // Task text container
+        const textSpan = document.createElement('span');
+        textSpan.textContent = task.text;
         textSpan.style.flexGrow = '1';
         textSpan.style.marginLeft = '0.5rem';
         li.appendChild(textSpan);
-
-        // Minus button
-        const minusBtn = document.createElement('button');
-        minusBtn.textContent = '−';
-        minusBtn.onclick = async () => {
-          if (task.count > 0) {
-            task.count--;
-            task.done = task.count >= task.target;
-            await saveTasks();
-            updateProgress();
-            renderTasks();
-          }
-        };
-        li.appendChild(minusBtn);
-
-        // Plus button
-        const plusBtn = document.createElement('button');
-        plusBtn.textContent = '+';
-        plusBtn.onclick = async () => {
-          if (task.count < task.target) {
-            task.count++;
-            task.done = task.count >= task.target;
-            await saveTasks();
-            updateProgress();
-            renderTasks();
-          }
-        };
-        li.appendChild(plusBtn);
-
 
         // Menu button (3 dots)
         const menuBtn = document.createElement('button');
@@ -347,15 +311,13 @@ window.sortableInstance = Sortable.create(document.getElementById('task-list'), 
   }
 });
 
-function updateProgress() {
-  const totalXP = tasks.reduce((sum, t) => sum + (t.xpPer * t.target), 0);
-  const earnedXP = tasks.reduce((sum, t) => sum + (t.count * t.xpPer), 0);
-  const percent = totalXP > 0 ? ((earnedXP / totalXP) * 100).toFixed(2) : '0.00';
+  function updateProgress() {
+  const totalWeight = tasks.reduce((sum, t) => sum + (t.weight || 1), 0);
+  const completedWeight = tasks.reduce((sum, t) => sum + ((t.done ? (t.weight || 1) : 0)), 0);
+  const percent = totalWeight > 0 ? ((completedWeight / totalWeight) * 100).toFixed(2) : '0.00';
   const progressBar = document.getElementById('progress-bar');
   progressBar.style.width = percent + '%';
-  progressBar.textContent = `${earnedXP} XP (${percent}%)`;
-}
-
+  progressBar.textContent = percent + '%';
 }
 
 
@@ -373,6 +335,8 @@ function updateProgress() {
   </script>
 </body>
 </html>
+
+
 
 
 
