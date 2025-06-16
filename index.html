@@ -124,9 +124,10 @@
       background: #1e293b;
     }
   li span {
-  display: block;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  display: inline-block;    /* Keep it inline */
+  white-space: nowrap;      /* Prevent line breaks */
+  overflow: hidden;         /* Hide overflow if too long */
+  text-overflow: ellipsis;  /* Show "..." if text too long */
   flex-grow: 1;
   margin-left: 0.5rem;
 }
