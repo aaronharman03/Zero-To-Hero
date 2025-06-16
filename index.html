@@ -214,8 +214,6 @@
         // Task text container
         const textSpan = document.createElement('span');
         textSpan.textContent = (task.text || "").replace(/[\r\n]+/g, ' ').replace(/\s+/g, ' ').trim();
-        textSpan.style.flexGrow = '1';
-        textSpan.style.marginLeft = '0.5rem';
         li.appendChild(textSpan);
 
         // Menu button (3 dots)
