@@ -464,7 +464,7 @@ function getLevel(xp) {
 }
 
 
- function updateProgress() {
+function updateProgress() {
   const totalXP = tasks.reduce((sum, t) => sum + (t.target * t.xpPer), 0);
   const earnedXP = tasks.reduce((sum, t) => sum + (t.count * t.xpPer), 0);
   const percent = totalXP > 0 ? ((earnedXP / totalXP) * 100).toFixed(2) : '0.00';
@@ -472,7 +472,12 @@ function getLevel(xp) {
   const progressBar = document.getElementById('progress-bar');
   progressBar.style.width = percent + '%';
   progressBar.textContent = `${earnedXP}/${totalXP} XP (${percent}%)`;
+
+  const level = getLevel(earnedXP);
+  const levelDisplay = document.getElementById('level-display');
+  levelDisplay.textContent = `Level ${level.level} – ${level.title}`;
 }
+
 
 
     // Load tasks on page load
