@@ -66,13 +66,14 @@
       align-items: center;
       margin-bottom: 0.5rem;
     }
-    li span {
-  white-space: nowrap;       /* Prevent the text from wrapping */
-  overflow: hidden;          /* Hide overflowed text */
-  text-overflow: ellipsis;   /* Show "..." if text is too long */
-  flex-grow: 1;              /* Take remaining horizontal space */
-  margin-left: 0.5rem;       /* Space from checkbox */
+   li span {
+  flex-grow: 1;
+  margin-left: 0.5rem;
+  white-space: nowrap;
+  overflow: visible; /* allow overflow */
+  text-overflow: clip; /* no ellipsis */
 }
+
     input[type="checkbox"] {
       margin-right: 0.5rem;
     }
