@@ -137,8 +137,11 @@ li span {
   <div id="progress-container">
     <div id="progress-bar"></div>
   </div>
-  <input id="new-task" type="text" placeholder="Add a step..." />
-  <button onclick="addTask()">Add Task</button>
+ <input id="task-name" type="text" placeholder="Task name" />
+<input id="task-target" type="number" min="1" placeholder="Target amount" />
+<input id="task-xp" type="number" min="1" placeholder="XP per log" />
+<button onclick="addTask()">Add Task</button>
+
   <ul id="task-list"></ul>
 
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
