@@ -429,6 +429,38 @@ plusBtn.onclick = async () => {
 
   updateProgress();
 }
+const levelData = [
+  { level: 1, xp: 0, title: "Basement Dweller 🧱" },
+  { level: 2, xp: 200, title: "Spark Finder 🔥" },
+  { level: 3, xp: 500, title: "Routine Rookie 🌱" },
+  { level: 4, xp: 900, title: "Structure Seeker 🧩" },
+  { level: 5, xp: 1400, title: "Momentum Mover ⚡" },
+  { level: 6, xp: 2000, title: "Consistency Builder 🛠️" },
+  { level: 7, xp: 2700, title: "Early Transformer 🔁" },
+  { level: 8, xp: 3500, title: "System Soldier 🧭" },
+  { level: 9, xp: 4400, title: "Training Machine 🏋️‍♂️" },
+  { level: 10, xp: 5500, title: "Focused Force 🧠" },
+  { level: 11, xp: 6700, title: "Strategic Climber ⛰️" },
+  { level: 12, xp: 8000, title: "Identity Shifter 🔓" },
+  { level: 13, xp: 9500, title: "Relentless Operator 🚀" },
+  { level: 14, xp: 11000, title: "Life Architect 🏗️" },
+  { level: 15, xp: 12500, title: "Direction Master 🧭" },
+  { level: 16, xp: 14000, title: "Builder of Self 🛡️" },
+  { level: 17, xp: 15500, title: "Lifestyle Warrior ⚔️" },
+  { level: 18, xp: 17000, title: "Peak Chaser 🧗‍♂️" },
+  { level: 19, xp: 18500, title: "Disciplined Beast 🦾" },
+  { level: 20, xp: 20000, title: "Hero in Motion 🏆" },
+  { level: 21, xp: 21869, title: "Final Form 🔮" }
+];
+
+function getLevel(xp) {
+  let level = levelData[0];
+  for (let i = 0; i < levelData.length; i++) {
+    if (xp >= levelData[i].xp) level = levelData[i];
+    else break;
+  }
+  return level;
+}
 
 
  function updateProgress() {
