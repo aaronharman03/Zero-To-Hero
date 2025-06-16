@@ -7,10 +7,12 @@
   <meta name="theme-color" content="#0f172a"/>
   <link rel="manifest" href="manifest.json" />
 
+  <!-- Firebase SDKs v8 for global 'firebase' -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <style>
+    /* 3-dot button styling */
     .menu-btn {
       background: transparent;
       border: none;
@@ -19,6 +21,7 @@
       margin-left: auto;
       position: relative;
     }
+    /* Menu container */
     .menu {
       display: none;
       position: absolute;
@@ -31,9 +34,11 @@
       z-index: 10;
       min-width: 100px;
     }
+    /* Show menu when active */
     .menu.active {
       display: block;
     }
+    /* Menu items */
     .menu button {
       width: 100%;
       background: none;
@@ -48,25 +53,26 @@
       background-color: #10b981;
       color: white;
     }
+    /* Inline editing input */
     .edit-input {
       flex-grow: 1;
       padding: 0.2rem 0.4rem;
       font-size: 1rem;
       margin-right: 0.5rem;
     }
-    li {
-      position: relative;
-      display: flex;
-      align-items: center;
-      margin-bottom: 0.5rem;
-    }
-    li span {
-      white-space: nowrap;
-      overflow: visible;
-      text-overflow: clip;
-      flex-grow: 1;
-      margin-left: 0.5rem;
-    }
+   li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+li span {
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip; /* no ellipsis */
+  flex-grow: 1;
+  margin-left: 0.5rem;
+}
     input[type="checkbox"] {
       margin-right: 0.5rem;
     }
@@ -104,7 +110,7 @@
       list-style: none;
       padding: 0;
     }
-    #new-task, #repeat-count, #xp-per-count {
+    #new-task {
       width: 100%;
       padding: 0.5rem;
       font-size: 1rem;
@@ -131,17 +137,15 @@
   <div id="progress-container">
     <div id="progress-bar"></div>
   </div>
-
-  <input id="new-task" type="text" placeholder="Task name (e.g. Run)" />
-  <input id="repeat-count" type="number" placeholder="How many times? (e.g. 200)" min="1" />
-  <input id="xp-per-count" type="number" placeholder="XP per repetition (e.g. 2)" min="1" />
+  <input id="new-task" type="text" placeholder="Add a step..." />
   <button onclick="addTask()">Add Task</button>
-
   <ul id="task-list"></ul>
 
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
+  <!-- Firebase config & app logic -->
   <script>
+    // Firebase config — check storageBucket value!
     const firebaseConfig = {
       apiKey: "AIzaSyB_2emUM0gMqkLaZrvdmeyV7zRvwRjYTC8",
       authDomain: "zero-to-hero-ae0b8.firebaseapp.com",
@@ -151,8 +155,10 @@
       appId: "1:858502999236:web:85d774dd58b905e677ed91",
     };
 
+    // Initialize Firebase
     const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+
     let tasks = [];
 
     async function saveTasks() {
@@ -164,21 +170,13 @@
     }
 
     async function addTask() {
-      const nameInput = document.getElementById('new-task');
-      const countInput = document.getElementById('repeat-count');
-      const xpInput = document.getElementById('xp-per-count');
-
-      const text = nameInput.value.trim();
-      const target = parseInt(countInput.value);
-      const xpPer = parseInt(xpInput.value) || 1;
-
-      if (text && target > 0) {
-        tasks.push({ text, count: 0, target, xpPer, done: false });
+      const input = document.getElementById('new-task');
+      const text = input.value.trim();
+      if (text) {
+        tasks.push({ text, done: false });
         await saveTasks();
         await renderTasks();
-        nameInput.value = '';
-        countInput.value = '';
-        xpInput.value = '';
+        input.value = '';
       }
     }
 
@@ -201,58 +199,132 @@
       tasks.forEach((task, i) => {
         const li = document.createElement('li');
 
+        // Checkbox
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = task.done;
+        checkbox.onchange = async () => {
+          tasks[i].done = checkbox.checked;
+          await saveTasks();
+          updateProgress();
+          renderTasks();
+        };
+        li.appendChild(checkbox);
+
+        // Task text container
         const textSpan = document.createElement('span');
-        textSpan.textContent = `${task.text}: ${task.count}/${task.target} (XP: ${task.xpPer})`;
+        textSpan.textContent = task.text;
+        textSpan.style.flexGrow = '1';
+        textSpan.style.marginLeft = '0.5rem';
         li.appendChild(textSpan);
 
-        const plusBtn = document.createElement('button');
-        plusBtn.textContent = '+';
-        plusBtn.style.marginLeft = '0.5rem';
-        plusBtn.onclick = async () => {
-          if (task.count < task.target) {
-            task.count++;
-            if (task.count === task.target) {
-              task.done = true;
-            }
-            await saveTasks();
-            updateProgress();
-            renderTasks();
-          }
+        // Menu button (3 dots)
+        const menuBtn = document.createElement('button');
+        menuBtn.className = 'menu-btn';
+        menuBtn.textContent = '⋮';
+        li.appendChild(menuBtn);
+
+        // Menu container
+        const menu = document.createElement('div');
+        menu.className = 'menu';
+
+        // Create Edit and Delete buttons
+        const editBtn = document.createElement('button');
+        editBtn.textContent = 'Edit';
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Delete';
+
+        // Add buttons to the menu
+        menu.appendChild(editBtn);
+        menu.appendChild(deleteBtn);
+        li.appendChild(menu);
+
+        // Toggle menu visibility
+        menuBtn.onclick = (e) => {
+          e.stopPropagation();
+          document.querySelectorAll('.menu.active').forEach(m => {
+            if (m !== menu) m.classList.remove('active');
+          });
+          menu.classList.toggle('active');
         };
-        li.appendChild(plusBtn);
+
+        // Close menu if click outside
+        document.addEventListener('click', () => {
+          menu.classList.remove('active');
+        });
+
+        // Delete functionality
+        deleteBtn.onclick = async (e) => {
+          e.stopPropagation();
+          tasks.splice(i, 1);
+          await saveTasks();
+          renderTasks();
+        };
+
+        // Edit functionality
+        editBtn.onclick = (e) => {
+          e.stopPropagation();
+          menu.classList.remove('active');
+
+          // Replace textSpan with input box
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.className = 'edit-input';
+          input.value = tasks[i].text;
+          li.replaceChild(input, textSpan);
+          input.focus();
+
+          input.onblur = async () => {
+            if (input.value.trim()) {
+              tasks[i].text = input.value.trim();
+              await saveTasks();
+              renderTasks();
+            } else {
+              renderTasks();
+            }
+          };
+          input.onkeydown = (event) => {
+            if (event.key === 'Enter') input.blur();
+            if (event.key === 'Escape') renderTasks();
+          };
+        };
 
         list.appendChild(li);
       });
-
-      updateProgress();
     }
+     // Store the sortable instance globally so we can destroy it when re-rendering
+if (window.sortableInstance) {
+  window.sortableInstance.destroy();
+}
 
-    function updateProgress() {
-      const totalXP = tasks.reduce((sum, t) => sum + ((t.target || 1) * (t.xpPer || 1)), 0);
-      const completedXP = tasks.reduce((sum, t) => sum + ((t.count || 0) * (t.xpPer || 1)), 0);
+window.sortableInstance = Sortable.create(document.getElementById('task-list'), {
+  animation: 150,
+  onEnd: async function (evt) {
+    // Rearrange task order in the array
+    const movedItem = tasks.splice(evt.oldIndex, 1)[0];
+    tasks.splice(evt.newIndex, 0, movedItem);
+    await saveTasks();
+    // ❌ Don't re-render here or it'll snap back
+    // ✅ Just update progress bar instead
+    updateProgress();
+  }
+});
 
-      const percent = totalXP > 0 ? ((completedXP / totalXP) * 100).toFixed(2) : '0.00';
-      const progressBar = document.getElementById('progress-bar');
-      progressBar.style.width = percent + '%';
-      progressBar.textContent = percent + '%';
-    }
+  function updateProgress() {
+  const totalWeight = tasks.reduce((sum, t) => sum + (t.weight || 1), 0);
+  const completedWeight = tasks.reduce((sum, t) => sum + ((t.done ? (t.weight || 1) : 0)), 0);
+  const percent = totalWeight > 0 ? ((completedWeight / totalWeight) * 100).toFixed(2) : '0.00';
+  const progressBar = document.getElementById('progress-bar');
+  progressBar.style.width = percent + '%';
+  progressBar.textContent = percent + '%';
+}
 
-    if (window.sortableInstance) {
-      window.sortableInstance.destroy();
-    }
 
-    window.sortableInstance = Sortable.create(document.getElementById('task-list'), {
-      animation: 150,
-      onEnd: async function (evt) {
-        const movedItem = tasks.splice(evt.oldIndex, 1)[0];
-        tasks.splice(evt.newIndex, 0, movedItem);
-        await saveTasks();
-        updateProgress();
-      }
-    });
-
+    // Load tasks on page load
     renderTasks();
 
+    // Register service worker for PWA offline support
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js').catch(e => {
@@ -263,3 +335,4 @@
   </script>
 </body>
 </html>
+
