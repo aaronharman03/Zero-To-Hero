@@ -60,12 +60,19 @@
       font-size: 1rem;
       margin-right: 0.5rem;
     }
-    li {
-      position: relative;
-      display: flex;
-      align-items: center;
-      margin-bottom: 0.5rem;
-    }
+   li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+li span {
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip; /* no ellipsis */
+  flex-grow: 1;
+  margin-left: 0.5rem;
+}
     input[type="checkbox"] {
       margin-right: 0.5rem;
     }
