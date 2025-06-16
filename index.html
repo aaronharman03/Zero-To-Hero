@@ -419,9 +419,23 @@ plusBtn.onclick = async () => {
         }
       };
 
-     inputName.onblur = () => setTimeout(saveEdit, 200);
-inputTarget.onblur = () => setTimeout(saveEdit, 200);
-inputXp.onblur = () => setTimeout(saveEdit, 200);
+ // Save on Enter key press
+[inputName, inputTarget, inputXp].forEach(input => {
+  input.onkeydown = (e) => {
+    if (e.key === 'Enter') {
+      saveEdit();
+    }
+  };
+});
+
+// Save when clicking outside inputs (on the li)
+li.onclick = (event) => {
+  if (!event.target.classList.contains('edit-input')) {
+    saveEdit();
+    li.onclick = null; // Remove handler after saving
+  }
+};
+
 
 
       inputName.onkeydown = (e) => { if (e.key === 'Enter') saveEdit(); };
