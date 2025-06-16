@@ -302,7 +302,7 @@ async function renderTasks() {
 
     // Task info text
     const textSpan = document.createElement('span');
-    textSpan.textContent = `${task.text}: ${task.count}/${task.target} (XP per log: ${task.xpPer})`;
+textSpan.textContent = `${task.text}: ${task.count}/${task.target}`;
     textSpan.style.flexGrow = '1';
     textSpan.style.marginLeft = '0.5rem';
     li.appendChild(textSpan);
