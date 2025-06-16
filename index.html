@@ -49,18 +49,21 @@
     height: 20px;
     margin-bottom: 1.5rem;
   }
+#progress-bar {
+  background: #10b981;
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  line-height: 20px;
+  user-select: none;
+  overflow: visible;           /* allow text to overflow */
+  white-space: nowrap;         /* keep the text on one line */
+  padding: 0 4px;              /* small padding so text doesn't touch edges */
+}
 
-  #progress-bar {
-    background: var(--accent);
-    height: 100%;
-    width: 0%;
-    transition: width 0.3s;
-    color: white;
-    font-weight: bold;
-    text-align: center;
-    line-height: 20px;
-    user-select: none;
-  }
 
   .form-group {
     display: grid;
