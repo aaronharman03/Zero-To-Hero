@@ -173,8 +173,11 @@ li span {
     }
 
     async function addTask() {
-      const input = document.getElementById('new-task');
-     const text = nameInput.value.trim();
+     const nameInput = document.getElementById('new-task');
+const countInput = document.getElementById('repeat-count');
+const xpInput = document.getElementById('xp-per-count');
+
+const text = nameInput.value.trim();
 const target = parseInt(countInput.value);
 const xpPer = parseInt(xpInput.value) || 1;
 
