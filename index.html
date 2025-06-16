@@ -12,27 +12,6 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <style>
-    #input-row {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-#input-row input {
-  padding: 0.5rem;
-  font-size: 1rem;
-  box-sizing: border-box;
-}
-
-#task-name {
-  flex: 2; /* wider */
-}
-
-#task-target,
-#task-xp {
-  flex: 1; /* half-width compared to task-name */
-}
-
     /* 3-dot button styling */
     .menu-btn {
       background: transparent;
@@ -127,7 +106,6 @@ li span {
       line-height: 20px;
       user-select: none;
     }
-    </div>
     ul {
       list-style: none;
       padding: 0;
@@ -158,12 +136,10 @@ li span {
   <h1>Zero to Hero</h1>
   <div id="progress-container">
     <div id="progress-bar"></div>
-  <div id="input-row">
-  <input id="task-name" type="text" placeholder="Task name" />
-  <input id="task-target" type="number" min="1" placeholder="Target" />
-  <input id="task-xp" type="number" min="1" placeholder="XP" />
-</div>
-
+  </div>
+ <input id="task-name" type="text" placeholder="Task name" />
+<input id="task-target" type="number" min="1" placeholder="Target amount" />
+<input id="task-xp" type="number" min="1" placeholder="XP per log" />
 <button onclick="addTask()">Add Task</button>
 
   <ul id="task-list"></ul>
@@ -415,10 +391,3 @@ plusBtn.onclick = async () => {
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
