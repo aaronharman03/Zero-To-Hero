@@ -137,10 +137,7 @@ li span {
   <div id="progress-container">
     <div id="progress-bar"></div>
   </div>
-  <input id="new-task" type="text" placeholder="Task name (e.g. Run)" />
-<input id="repeat-count" type="number" placeholder="How many times? (e.g. 200)" min="1" />
-<input id="xp-per-count" type="number" placeholder="XP per repetition (e.g. 2)" min="1" />
-
+  <input id="new-task" type="text" placeholder="Add a step..." />
   <button onclick="addTask()">Add Task</button>
   <ul id="task-list"></ul>
 
@@ -173,158 +170,53 @@ li span {
     }
 
     async function addTask() {
-     const nameInput = document.getElementById('new-task');
-const countInput = document.getElementById('repeat-count');
-const xpInput = document.getElementById('xp-per-count');
-
-const text = nameInput.value.trim();
-const target = parseInt(countInput.value);
-const xpPer = parseInt(xpInput.value) || 1;
-
-if (text && target > 0) {
-  tasks.push({ text, count: 0, target, xpPer, done: false });
+      const input = document.getElementById('new-task');
+      const text = input.value.trim();
+      if (text) {
+        tasks.push({ text, done: false });
         await saveTasks();
         await renderTasks();
-  nameInput.value = '';
-countInput.value = '';
-xpInput.value = '';
-
+        input.value = '';
       }
     }
 
-   async function renderTasks() {
-  try {
-    const doc = await db.collection("tasks").doc("defaultList").get();
-    tasks = doc.exists ? doc.data().tasks || [] : [];
-  } catch (e) {
-    console.error("Error loading tasks:", e);
-    tasks = [];
-  }
-
- 
-      });
-   const li = document.createElement('li');
-
-  // Checkbox
-  const checkbox = document.createElement('input');
-  checkbox.type = 'checkbox';
-  checkbox.checked = task.done;
-  checkbox.onchange = async () => {
-    tasks[i].done = checkbox.checked;
-    await saveTasks();
-    updateProgress();
-    renderTasks();
-  };
-  li.appendChild(checkbox);
-
-  // Task Text
-  const textSpan = document.createElement('span');
-  textSpan.textContent = `${task.text}: ${task.count}/${task.target || 1} (XP: ${task.xpPer || 1})`;
-  textSpan.style.flexGrow = '1';
-  textSpan.style.marginLeft = '0.5rem';
-  li.appendChild(textSpan);
-
-  // Controls
-  const controls = document.createElement('div');
-  controls.style.display = 'flex';
-  controls.style.alignItems = 'center';
-  controls.style.gap = '0.5rem';
-
-  const minusBtn = document.createElement('button');
-  minusBtn.textContent = '−';
-  minusBtn.style.padding = '0.3rem 0.6rem';
-  minusBtn.onclick = async () => {
-    if (tasks[i].count > 0) {
-      tasks[i].count--;
-      await saveTasks();
-      updateProgress();
-      renderTasks();
-    }
-  };
-  controls.appendChild(minusBtn);
-
-  const plusBtn = document.createElement('button');
-  plusBtn.textContent = '+';
-  plusBtn.style.padding = '0.3rem 0.6rem';
-  plusBtn.onclick = async () => {
-    if (tasks[i].count < (tasks[i].target || 1)) {
-      tasks[i].count++;
-      await saveTasks();
-      updateProgress();
-      renderTasks();
-    }
-  };
-  controls.appendChild(plusBtn);
-
-  li.appendChild(controls);
-
-  // Menu
-  const menuBtn = document.createElement('button');
-  menuBtn.className = 'menu-btn';
-  menuBtn.textContent = '⋮';
-  li.appendChild(menuBtn);
-
-  const menu = document.createElement('div');
-  menu.className = 'menu';
-
-  const editBtn = document.createElement('button');
-  editBtn.textContent = 'Edit';
-
-  const deleteBtn = document.createElement('button');
-  deleteBtn.textContent = 'Delete';
-
-  menu.appendChild(editBtn);
-  menu.appendChild(deleteBtn);
-  li.appendChild(menu);
-
-  menuBtn.onclick = (e) => {
-    e.stopPropagation();
-    document.querySelectorAll('.menu.active').forEach(m => {
-      if (m !== menu) m.classList.remove('active');
-    });
-    menu.classList.toggle('active');
-  };
-  document.addEventListener('click', () => {
-    menu.classList.remove('active');
-  });
-
-  deleteBtn.onclick = async (e) => {
-    e.stopPropagation();
-    tasks.splice(i, 1);
-    await saveTasks();
-    renderTasks();
-  };
-
-  editBtn.onclick = (e) => {
-    e.stopPropagation();
-    menu.classList.remove('active');
-
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'edit-input';
-    input.value = tasks[i].text;
-    li.replaceChild(input, textSpan);
-    input.focus();
-
-    input.onblur = async () => {
-      if (input.value.trim()) {
-        tasks[i].text = input.value.trim();
-        await saveTasks();
-        renderTasks();
-      } else {
-        renderTasks();
+    async function renderTasks() {
+      try {
+        const doc = await db.collection("tasks").doc("defaultList").get();
+        if (doc.exists) {
+          tasks = doc.data().tasks || [];
+        } else {
+          tasks = [];
+        }
+      } catch (e) {
+        console.error("Error loading tasks:", e);
+        tasks = [];
       }
-    };
-    input.onkeydown = (event) => {
-      if (event.key === 'Enter') input.blur();
-      if (event.key === 'Escape') renderTasks();
-    };
-  };
 
-  list.appendChild(li);
+      const list = document.getElementById('task-list');
+      list.innerHTML = '';
 
+      tasks.forEach((task, i) => {
+        const li = document.createElement('li');
 
- 
+        // Checkbox
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = task.done;
+        checkbox.onchange = async () => {
+          tasks[i].done = checkbox.checked;
+          await saveTasks();
+          updateProgress();
+          renderTasks();
+        };
+        li.appendChild(checkbox);
+
+        // Task text container
+        const textSpan = document.createElement('span');
+        textSpan.textContent = task.text;
+        textSpan.style.flexGrow = '1';
+        textSpan.style.marginLeft = '0.5rem';
+        li.appendChild(textSpan);
 
         // Menu button (3 dots)
         const menuBtn = document.createElement('button');
@@ -419,16 +311,14 @@ window.sortableInstance = Sortable.create(document.getElementById('task-list'), 
   }
 });
 
-function updateProgress() {
-  const totalXP = tasks.reduce((sum, t) => sum + ((t.target || 1) * (t.xpPer || 1)), 0);
-  const completedXP = tasks.reduce((sum, t) => sum + ((t.count || 0) * (t.xpPer || 1)), 0);
-
-  const percent = totalXP > 0 ? ((completedXP / totalXP) * 100).toFixed(2) : '0.00';
+  function updateProgress() {
+  const totalWeight = tasks.reduce((sum, t) => sum + (t.weight || 1), 0);
+  const completedWeight = tasks.reduce((sum, t) => sum + ((t.done ? (t.weight || 1) : 0)), 0);
+  const percent = totalWeight > 0 ? ((completedWeight / totalWeight) * 100).toFixed(2) : '0.00';
   const progressBar = document.getElementById('progress-bar');
   progressBar.style.width = percent + '%';
   progressBar.textContent = percent + '%';
 }
-
 
 
     // Load tasks on page load
@@ -445,4 +335,6 @@ function updateProgress() {
   </script>
 </body>
 </html>
+
+
 
