@@ -283,17 +283,18 @@ async function renderTasks() {
 
     const li = document.createElement('li');
 
-    // Checkbox
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.checked = task.done;
-    checkbox.onchange = async () => {
-      tasks[i].done = checkbox.checked;
-      await saveTasks();
-      updateProgress();
-      renderTasks();
-    };
-    li.appendChild(checkbox);
+  // Checkbox
+// const checkbox = document.createElement('input');
+// checkbox.type = 'checkbox';
+// checkbox.checked = task.done;
+// checkbox.onchange = async () => {
+//   tasks[i].done = checkbox.checked;
+//   await saveTasks();
+//   updateProgress();
+//   renderTasks();
+// };
+// li.appendChild(checkbox);
+
 
     // Task info text
     const textSpan = document.createElement('span');
