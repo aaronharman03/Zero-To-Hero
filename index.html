@@ -137,7 +137,10 @@ li span {
   <div id="progress-container">
     <div id="progress-bar"></div>
   </div>
-  <input id="new-task" type="text" placeholder="Add a step..." />
+  <input id="new-task" type="text" placeholder="Task name (e.g. Run)" />
+<input id="repeat-count" type="number" placeholder="How many times? (e.g. 200)" min="1" />
+<input id="xp-per-count" type="number" placeholder="XP per repetition (e.g. 2)" min="1" />
+
   <button onclick="addTask()">Add Task</button>
   <ul id="task-list"></ul>
 
