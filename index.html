@@ -174,9 +174,12 @@ li span {
 
     async function addTask() {
       const input = document.getElementById('new-task');
-      const text = input.value.trim();
-      if (text) {
-        tasks.push({ text, done: false });
+     const text = nameInput.value.trim();
+const target = parseInt(countInput.value);
+const xpPer = parseInt(xpInput.value) || 1;
+
+if (text && target > 0) {
+  tasks.push({ text, count: 0, target, xpPer, done: false });
         await saveTasks();
         await renderTasks();
         input.value = '';
