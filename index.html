@@ -419,9 +419,10 @@ plusBtn.onclick = async () => {
         }
       };
 
-      inputName.onblur = saveEdit;
-      inputTarget.onblur = saveEdit;
-      inputXp.onblur = saveEdit;
+     inputName.onblur = () => setTimeout(saveEdit, 200);
+inputTarget.onblur = () => setTimeout(saveEdit, 200);
+inputXp.onblur = () => setTimeout(saveEdit, 200);
+
 
       inputName.onkeydown = (e) => { if (e.key === 'Enter') saveEdit(); };
       inputTarget.onkeydown = (e) => { if (e.key === 'Enter') saveEdit(); };
