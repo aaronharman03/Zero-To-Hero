@@ -11,126 +11,175 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-  <style>
-    /* 3-dot button styling */
-    .menu-btn {
-      background: transparent;
-      border: none;
-      font-size: 1.2rem;
-      cursor: pointer;
-      margin-left: auto;
-      position: relative;
-    }
-    /* Menu container */
-    .menu {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: 100%;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 0.3rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-      z-index: 10;
-      min-width: 100px;
-    }
-    /* Show menu when active */
-    .menu.active {
-      display: block;
-    }
-    /* Menu items */
-    .menu button {
-      width: 100%;
-      background: none;
-      border: none;
-      padding: 0.5rem 1rem;
-      text-align: left;
-      cursor: pointer;
-      font-size: 0.9rem;
-      color: #0f172a;
-    }
-    .menu button:hover {
-      background-color: #10b981;
-      color: white;
-    }
-    /* Inline editing input */
-    .edit-input {
-      flex-grow: 1;
-      padding: 0.2rem 0.4rem;
-      font-size: 1rem;
-      margin-right: 0.5rem;
-    }
-   li {
-  position: relative;
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-li span {
-  white-space: nowrap;
-  overflow: visible;
-  text-overflow: clip; /* no ellipsis */
-  flex-grow: 1;
-  margin-left: 0.5rem;
-}
-    input[type="checkbox"] {
-      margin-right: 0.5rem;
-    }
-    body {
-      font-family: sans-serif;
-      background: #f8fafc;
-      color: #0f172a;
-      padding: 2rem;
-      max-width: 500px;
-      margin: auto;
-    }
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-    #progress-container {
-      background: #e5e7eb;
-      border-radius: 999px;
-      overflow: hidden;
-      height: 20px;
-      margin-bottom: 1rem;
-    }
-    #progress-bar {
-      background: #10b981;
-      height: 100%;
-      width: 0%;
-      transition: width 0.3s;
-      color: white;
-      font-weight: bold;
-      text-align: center;
-      line-height: 20px;
-      user-select: none;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    #new-task {
-      width: 100%;
-      padding: 0.5rem;
-      font-size: 1rem;
-      margin-bottom: 1rem;
-      box-sizing: border-box;
-    }
-    button {
-      width: 100%;
-      padding: 0.5rem;
-      font-size: 1rem;
-      background: #0f172a;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 0.5rem;
-    }
-    button:hover {
-      background: #1e293b;
-    }
-  </style>
+ <style>
+  :root {
+    --primary: #0f172a;
+    --accent: #10b981;
+    --background: #f8fafc;
+    --light-gray: #e5e7eb;
+    --hover: #1e293b;
+  }
+
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--background);
+    color: var(--primary);
+    padding: 2rem;
+    max-width: 600px;
+    margin: auto;
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  #progress-container {
+    background: var(--light-gray);
+    border-radius: 999px;
+    overflow: hidden;
+    height: 20px;
+    margin-bottom: 1.5rem;
+  }
+
+  #progress-bar {
+    background: var(--accent);
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    line-height: 20px;
+    user-select: none;
+  }
+
+  .form-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .form-group input {
+    padding: 0.5rem;
+    font-size: 1rem;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 0.4rem;
+  }
+
+  .form-group input:focus {
+    outline: 2px solid var(--accent);
+  }
+
+  button {
+    padding: 0.6rem;
+    font-size: 1rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: background 0.2s;
+  }
+
+  button:hover {
+    background: var(--hover);
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem;
+    border-bottom: 1px solid #ddd;
+    background: white;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  li span {
+    flex-grow: 1;
+    margin-left: 0.5rem;
+  }
+
+  .edit-input {
+    padding: 0.4rem;
+    font-size: 1rem;
+    border-radius: 0.3rem;
+    border: 1px solid #ccc;
+    margin-right: 0.5rem;
+  }
+
+  .menu-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 0.3rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    min-width: 100px;
+  }
+
+  .menu.active {
+    display: block;
+  }
+
+  .menu button {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--primary);
+  }
+
+  .menu button:hover {
+    background-color: var(--accent);
+    color: white;
+  }
+
+  input[type="checkbox"] {
+    transform: scale(1.2);
+    cursor: pointer;
+  }
+
+  .btn-small {
+    padding: 0.2rem 0.5rem;
+    font-size: 1.1rem;
+    border-radius: 0.3rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-small:hover {
+    background: #059669;
+  }
+</style>
+
 </head>
 <body>
   <h1>Zero to Hero</h1>
