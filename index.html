@@ -199,6 +199,7 @@
         checkbox.onchange = async () => {
           tasks[i].done = checkbox.checked;
           await saveTasks();
+          updateProgress();
           renderTasks();
         };
         li.appendChild(checkbox);
