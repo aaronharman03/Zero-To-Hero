@@ -408,6 +408,14 @@ plusBtn.onclick = async () => {
       li.insertBefore(inputTarget, minusBtn);
       li.insertBefore(inputXp, minusBtn);
 
+        const instruction = document.createElement('small');
+  instruction.textContent = 'Tap outside to save';
+  instruction.style.marginTop = '0.5rem';
+  instruction.style.color = '#6b7280';
+  instruction.style.fontSize = '0.8rem';
+  li.appendChild(instruction);
+
+      
       inputName.focus();
 
       const saveEdit = async () => {
