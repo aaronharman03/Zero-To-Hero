@@ -522,7 +522,7 @@ function updateProgress() {
   const percent = totalXP > 0 ? ((earnedXP / totalXP) * 100).toFixed(2) : '0.00';
 
   const progressBar = document.getElementById('progress-bar');
-  progressBar.style.width = percent + '%';
+ progressBar.style.width = percent > 0 ? percent + '%' : '0';
   progressBar.textContent = `${earnedXP}/${totalXP} XP (${percent}%)`;
 
   const level = getLevel(earnedXP);
