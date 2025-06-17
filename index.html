@@ -560,5 +560,14 @@ levelBar.textContent = `${levelInfo.xpInLevel}/${levelInfo.xpToNext} XP (${level
       });
     }
   </script>
+  <script>
+  document.getElementById('toggle-form').addEventListener('click', () => {
+    const container = document.getElementById('task-form-container');
+    const isVisible = container.style.display === 'block';
+    container.style.display = isVisible ? 'none' : 'block';
+    document.getElementById('toggle-form').textContent = isVisible ? '➕ Add Task' : '➖ Hide Form';
+  });
+</script>
+
 </body>
 </html>
