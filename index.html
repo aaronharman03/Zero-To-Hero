@@ -522,8 +522,15 @@ function updateProgress() {
   const percent = totalXP > 0 ? ((earnedXP / totalXP) * 100).toFixed(2) : '0.00';
 
   const progressBar = document.getElementById('progress-bar');
- progressBar.style.width = percent > 0 ? percent + '%' : '0';
-  progressBar.textContent = `${earnedXP}/${totalXP} XP (${percent}%)`;
+if (percent > 0) {
+  progressBar.style.width = percent + '%';
+  progressBar.style.background = '#10b981';
+} else {
+  progressBar.style.width = '0';
+  progressBar.style.background = 'transparent'; // no green at 0
+}
+progressBar.textContent = `${earnedXP}/${totalXP} XP (${percent}%)`;
+
 
   const level = getLevel(earnedXP);
   const levelDisplay = document.getElementById('level-display');
