@@ -514,6 +514,12 @@ function updateProgress() {
   const level = getLevel(earnedXP);
   const levelDisplay = document.getElementById('level-display');
   levelDisplay.textContent = `Level ${level.level} – ${level.title}`;
+  
+  const levelInfo = getLevelProgress(earnedXP);
+const levelBar = document.getElementById('level-progress-bar');
+levelBar.style.width = levelInfo.percent + '%';
+levelBar.textContent = `${levelInfo.xpInLevel}/${levelInfo.xpToNext} XP (${levelInfo.percent}%)`;
+
 }
 
 
