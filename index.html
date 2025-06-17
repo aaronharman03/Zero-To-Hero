@@ -209,10 +209,13 @@
 </div>
 
   
- <input id="task-name" type="text" placeholder="Task name" />
-<input id="task-target" type="number" min="1" placeholder="Target amount" />
-<input id="task-xp" type="number" min="1" placeholder="XP per log" />
-<button onclick="addTask()">Add Task</button>
+ <button id="toggle-task-form" class="btn-small">＋</button>
+<div id="task-form-container" class="task-form" style="display: none;">
+  <input id="task-name" type="text" placeholder="Task name" />
+  <input id="task-target" type="number" min="1" placeholder="Target amount" />
+  <input id="task-xp" type="number" min="1" placeholder="XP per log" />
+  <button onclick="addTask()">Add Task</button>
+</div>
 
   <ul id="task-list"></ul>
 
