@@ -481,6 +481,22 @@ function getLevel(xp) {
   return level;
 }
 
+    function getLevelProgress(xp) {
+  const currentLevel = getLevel(xp);
+  const currentXP = currentLevel.xp;
+
+  const nextLevel = levelData.find(l => l.level === currentLevel.level + 1);
+  const nextXP = nextLevel ? nextLevel.xp : currentXP + 1000; // buffer if last level
+
+  const levelProgress = ((xp - currentXP) / (nextXP - currentXP)) * 100;
+  return {
+    level: currentLevel,
+    percent: Math.min(levelProgress, 100).toFixed(2),
+    xpInLevel: xp - currentXP,
+    xpToNext: nextXP - currentXP
+  };
+}
+
 
 function updateProgress() {
   const totalXP = tasks.reduce((sum, t) => sum + (t.target * t.xpPer), 0);
